@@ -20,7 +20,7 @@ require([
             "showGroupHeading": false,
             "includeInLayerList": true,
             "layers": {
-                "HUC 4 (from Forest Service)" : {
+                "HUC 4 from Forest Service" : {
                     "url": "http://apps.fs.fed.us/arcx/rest/services/EDW_FEATURE/EDW_Watersheds_01/MapServer",
                     "visibleLayers": [1],
                     "options": {
@@ -37,7 +37,6 @@ require([
                             "id": "1",
                             "exp": "HUC_4 IN ('0512','0509','0514','0709','0713','0706','0708','0714','1030','0801','0802','0803','0806','0807','0808','0809')"
                         }],
-                        "hasZoomto": true,
                         "includeLegend": true
                     }
                 }
