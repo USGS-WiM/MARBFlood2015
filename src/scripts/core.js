@@ -59,6 +59,89 @@ require([
     //bring this line back after experiment////////////////////////////
     //allLayers = mapLayers;
 
+    // Added for handling of ajaxTransport in IE
+    if (!jQuery.support.cors && window.XDomainRequest) {
+        var httpRegEx = /^https?:\/\//i;
+        var getOrPostRegEx = /^get|post$/i;
+        var sameSchemeRegEx = new RegExp('^'+location.protocol, 'i');
+        var xmlRegEx = /\/xml/i;
+
+        // ajaxTransport exists in jQuery 1.5+
+        jQuery.ajaxTransport('text html xml json', function(options, userOptions, jqXHR){
+            // XDomainRequests must be: asynchronous, GET or POST methods, HTTP or HTTPS protocol, and same scheme as calling page
+            if (options.crossDomain && options.async && getOrPostRegEx.test(options.type) && httpRegEx.test(userOptions.url) && sameSchemeRegEx.test(userOptions.url)) {
+                var xdr = null;
+                var userType = (userOptions.dataType||'').toLowerCase();
+                return {
+                    send: function(headers, complete){
+                        xdr = new XDomainRequest();
+                        if (/^\d+$/.test(userOptions.timeout)) {
+                            xdr.timeout = userOptions.timeout;
+                        }
+                        xdr.ontimeout = function(){
+                            complete(500, 'timeout');
+                        };
+                        xdr.onload = function(){
+                            var allResponseHeaders = 'Content-Length: ' + xdr.responseText.length + '\r\nContent-Type: ' + xdr.contentType;
+                            var status = {
+                                code: 200,
+                                message: 'success'
+                            };
+                            var responses = {
+                                text: xdr.responseText
+                            };
+
+                            try {
+                                if (userType === 'json') {
+                                    try {
+                                        responses.json = JSON.parse(xdr.responseText);
+                                    } catch(e) {
+                                        status.code = 500;
+                                        status.message = 'parseerror';
+                                        //throw 'Invalid JSON: ' + xdr.responseText;
+                                    }
+                                } else if ((userType === 'xml') || ((userType !== 'text') && xmlRegEx.test(xdr.contentType))) {
+                                    var doc = new ActiveXObject('Microsoft.XMLDOM');
+                                    doc.async = true;
+                                    try {
+                                        doc.loadXML(xdr.responseText);
+                                    } catch(e) {
+                                        doc = undefined;
+                                    }
+                                    if (!doc || !doc.documentElement || doc.getElementsByTagName('parsererror').length) {
+                                        status.code = 500;
+                                        status.message = 'parseerror';
+                                        throw 'Invalid XML: ' + xdr.responseText;
+                                    }
+                                    responses.xml = doc;
+                                }
+                            } catch(parseMessage) {
+                                throw parseMessage;
+                            } finally {
+                                complete(status.code, status.message, responses, allResponseHeaders);
+                            }
+                        };
+                        xdr.onerror = function(){
+                            complete(500, 'error', {
+                                text: xdr.responseText
+                            });
+                        };
+                        xdr.open(options.type, options.url);
+                        //xdr.send(userOptions.data);
+                        xdr.send();
+                    },
+                    abort: function(){
+                        if (xdr) {
+                            xdr.abort();
+                        }
+                    }
+                };
+            }
+        });
+    };
+
+    jQuery.support.cors = true;
+
     map = Map('mapDiv', {
         basemap: 'topo',
         extent: new Extent(-11855313.614264622, 3059969.795996928, -7946629.735874887, 5606240.082232042, new SpatialReference({ wkid:3857 })),
@@ -121,11 +204,6 @@ require([
         $('#scale')[0].innerHTML = addCommas(scale);
     });
 
-    on(map, "extent-change", function() {
-        var extent = map.extent;
-        console.log(extent);
-    });
-
     //updates lat/lng indicator on mouse move. does not apply on devices w/out mouse. removes "map center" label
     on(map, "mouse-move", function (cursorPosition) {
         $('#mapCenterLabel').css("display", "none");
@@ -186,7 +264,7 @@ require([
     //end code for adding draggability to infoWindow
 
     on(map, "click", function(evt) {
-        var graphic = new Graphic();
+        /*var graphic = new Graphic();
 
         var feature = graphic;
 
@@ -200,7 +278,7 @@ require([
         map.infoWindow.setFeatures([feature]);
         map.infoWindow.show(evt.mapPoint);
 
-        map.infoWindow.show();
+        map.infoWindow.show();*/
     });
 
     var geocoder = new Geocoder({
@@ -227,6 +305,52 @@ require([
     map.on('load', function (){
         map.infoWindow.set('highlight', false);
         map.infoWindow.set('titleInBody', false);
+    });
+
+    map.on('layer-add', function (evt) {
+        var layer = evt.layer.id;
+
+        if (layer == "nwisSites") {
+            map.getLayer(layer).on('click', function(evt) {
+                console.log(evt.graphic.attributes["Name"]);
+
+                var feature = evt.graphic;
+                var attr = feature.attributes;
+
+                var template = new esri.InfoTemplate("<span class=''>${Name}</span>",
+                    "<i id='rtLoader' class='fa fa-refresh fa-spin'></i>" +
+                    "<div id='rtInfo'>this stuff here</div>");
+
+                feature.setInfoTemplate(template);
+
+                map.infoWindow.setFeatures([feature]);
+
+                map.infoWindow.show(evt.mapPoint);
+                //map.infoWindow.resize(400,400);
+
+                //var url = "http://waterservices.usgs.gov/nwis/site/?format=gm&sites="+attr['Name']+"&siteOutput=expanded&outputDataTypeCd=iv&hasDataTypeCd=iv&parameterCd=00065,00060,00010,00095,63680,99133";
+                var url = "http://waterservices.usgs.gov/nwis/iv/?format=json&sites="+attr['Name']+"&parameterCd=00060,00065,00010,00095,63680,99133";
+
+                $.ajax({
+                    dataType: 'json',
+                    type: 'GET',
+                    url: url,
+                    headers: {'Accept': '*/*'},
+                    success: function (data) {
+                        var siteData = data;
+                        $.each(data.features, function(key, value) {
+                            if (value.attributes.Constituent != null) {
+
+                            }
+                        });
+                    },
+                    error: function (error) {
+                        console.log("Error processing the JSON. The error is:" + error);
+                    }
+                });
+
+            });
+        }
     });
 
     // Geosearch functions
@@ -483,6 +607,7 @@ require([
             map.addLayer(layer);
 
             //add layer to layer list
+            //add layer to layer list
             mapLayers.push([exclusiveGroupName,camelize(layerName),layer]);
 
             //check if its an exclusiveGroup item
@@ -513,7 +638,7 @@ require([
                         });
                     });
 
-                    var exGroupDiv = $('<div id="' + camelize(exclusiveGroupName) + '" class="btn-group-vertical" data-toggle="buttons"></div');
+                    var exGroupDiv = $('<div id="' + camelize(exclusiveGroupName) + '" class="btn-group-vertical" data-toggle="buttons"></div>');
                     $('#toggle').append(exGroupDiv);
                 }
 

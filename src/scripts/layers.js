@@ -53,6 +53,7 @@ require([
                     "options": {
                         "id": "aceDiversions",
                         "opacity": 1.0,
+                        "outFields": ["*"],
                         "visible": true
                     },
                     "wimOptions": {
@@ -69,6 +70,7 @@ require([
                     "options": {
                         "id": "nwisSites",
                         "opacity": 1.0,
+                        "outFields": ["*"],
                         "visible": true
                     },
                     "wimOptions": {
