@@ -264,21 +264,7 @@ require([
     //end code for adding draggability to infoWindow
 
     on(map, "click", function(evt) {
-        /*var graphic = new Graphic();
 
-        var feature = graphic;
-
-        var template = new esri.InfoTemplate("test popup",
-            "attributes and stuff go here");
-
-        //ties the above defined InfoTemplate to the feature result returned from a click event
-
-        feature.setInfoTemplate(template);
-
-        map.infoWindow.setFeatures([feature]);
-        map.infoWindow.show(evt.mapPoint);
-
-        map.infoWindow.show();*/
     });
 
     var geocoder = new Geocoder({
@@ -317,19 +303,10 @@ require([
                 var feature = evt.graphic;
                 var attr = feature.attributes;
 
-                var template = new esri.InfoTemplate("<span class=''>${Name}</span>",
-                    "<i id='rtLoader' class='fa fa-refresh fa-spin'></i>" +
-                    "<div id='rtInfo'>this stuff here</div>");
-
-                feature.setInfoTemplate(template);
-
-                map.infoWindow.setFeatures([feature]);
-
-                map.infoWindow.show(evt.mapPoint);
-                //map.infoWindow.resize(400,400);
-
                 //var url = "http://waterservices.usgs.gov/nwis/site/?format=gm&sites="+attr['Name']+"&siteOutput=expanded&outputDataTypeCd=iv&hasDataTypeCd=iv&parameterCd=00065,00060,00010,00095,63680,99133";
                 var url = "http://waterservices.usgs.gov/nwis/iv/?format=json&sites="+attr['Name']+"&parameterCd=00060,00065,00010,00095,63680,99133";
+
+                var rtHtml = "";
 
                 $.ajax({
                     dataType: 'json',
@@ -338,11 +315,60 @@ require([
                     headers: {'Accept': '*/*'},
                     success: function (data) {
                         var siteData = data;
-                        $.each(data.features, function(key, value) {
-                            if (value.attributes.Constituent != null) {
+                        //if siteData.
+                        //rtHtml = ""
+                        $.each(siteData.value.timeSeries, function(key, value) {
+                            /*console.log("key: " + key + ", value: " + value);
+                            console.log(
+                                "var code: " + value.variable.variableCode[0].value +
+                                ", units: " + value.variable.unit.unitAbbreviation +
+                                ", value: " + value.values[0].value[0].value);*/
 
+                            var variableCode = value.variable.variableCode[0].value;
+                            var variable = "";
+                            var units = value.variable.unit.unitAbbreviation;
+                            var varValue = "";
+                            if (value.values[0].value.length > 0) {
+                                var varValue = value.values[0].value[0].value;
+                                switch (variableCode) {
+                                    case "00060":
+                                        variable = "Discharge";
+                                        break;
+                                    case "00065":
+                                        variable = "Gage height";
+                                        break;
+                                    case "00010":
+                                        variable = "Temperature, water";
+                                        break;
+                                    case "00095":
+                                        variable = "Specific cond at 25C";
+                                        break;
+                                    case "63680":
+                                        variable = "Turbidity, Form Neph";
+                                        break;
+                                    case "99133":
+                                        variable = "NO3+NO2,water,insitu";
+                                        break;
+                                }
+
+                                var rtLabel = "<label>" + variable + ": <span style='font-weight: normal'>" + varValue + ", " + units + "</span></label><br/>";
+
+                                rtHtml = rtHtml + rtLabel;
                             }
+
+                            //$("#rtInfo").html(rtHtml);
                         });
+
+                        var template = new esri.InfoTemplate("<span class=''>Site No: ${Name}</span>",
+                            "<div id='rtInfo'>" + rtHtml + "</div>");
+
+                        feature.setInfoTemplate(template);
+
+                        map.infoWindow.setFeatures([feature]);
+
+                        map.infoWindow.show(evt.mapPoint);
+                        map.infoWindow.resize(290,400);
+
                     },
                     error: function (error) {
                         console.log("Error processing the JSON. The error is:" + error);

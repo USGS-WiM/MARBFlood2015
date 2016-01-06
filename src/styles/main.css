@@ -296,6 +296,10 @@ a.lgi-zoom:hover {
     text-align: center;
 }
 
+#rtLoader {
+    font-size: 50px;
+}
+
 #wim_logo {
     background: #000 0 0;
     border-radius: 5px;
