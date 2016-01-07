@@ -4,14 +4,20 @@
 var allLayers;
 
 require([
-    "esri/geometry/Extent",
-    "esri/layers/WMSLayerInfo",
-    "esri/layers/FeatureLayer",
+    'esri/Color',
+    'esri/geometry/Extent',
+    'esri/layers/WMSLayerInfo',
+    'esri/layers/FeatureLayer',
+    'esri/symbols/SimpleFillSymbol',
+    'esri/symbols/SimpleLineSymbol',
     'dojo/domReady!'
 ], function(
+    Color,
     Extent,
     WMSLayerInfo,
-    FeatureLayer
+    FeatureLayer,
+    SimpleFillSymbol,
+    SimpleLineSymbol
 ) {
 
     allLayers = [
@@ -20,11 +26,11 @@ require([
             "showGroupHeading": false,
             "includeInLayerList": true,
             "layers": {
-                "HUC 4 from Forest Service" : {
-                    "url": "http://apps.fs.fed.us/arcx/rest/services/EDW_FEATURE/EDW_Watersheds_01/MapServer",
-                    "visibleLayers": [1],
+                "HUC 2 from Forest Service" : {
+                    "url": "http://services.nationalmap.gov/arcgis/rest/services/selectable_polygons/MapServer",//"url": "http://apps.fs.fed.us/arcx/rest/services/EDW_FEATURE/EDW_Watersheds_01/MapServer",
+                    "visibleLayers": [12],
                     "options": {
-                        "id": "huc4",
+                        "id": "huc2",
                         "opacity": 1.0,
                         "visible": true
                     },
@@ -32,10 +38,28 @@ require([
                         "type": "layer",
                         "layerType": "agisDynamic",
                         "includeInLayerList": true,
-                        "hasOpacitySlider": true,
                         "layerDefinition": [{
-                            "id": "1",
-                            "exp": "HUC_4 IN ('0512','0509','0514','0709','0713','0706','0708','0714','1030','0801','0802','0803','0806','0807','0808','0809')"
+                            "id": "12",
+                            "exp": "HUC2 IN ('05','06','07','08','10','11')"
+                        }],
+                        "includeLegend": true
+                    }
+                },
+                "HUC 4 from Forest Service" : {
+                    "url": "http://services.nationalmap.gov/arcgis/rest/services/selectable_polygons/MapServer",//http://apps.fs.fed.us/arcx/rest/services/EDW_FEATURE/EDW_Watersheds_01/MapServer",
+                    "visibleLayers": [13],
+                    "options": {
+                        "id": "huc4",
+                        "opacity": 1.0,
+                        "visible": false
+                    },
+                    "wimOptions": {
+                        "type": "layer",
+                        "layerType": "agisDynamic",
+                        "includeInLayerList": true,
+                        "layerDefinition": [{
+                            "id": "13",
+                            "exp": "HUC4 LIKE '05%' OR HUC4 LIKE '06%' OR HUC4 LIKE '07%' OR HUC4 LIKE '08%' OR HUC4 LIKE '10%' OR HUC4 LIKE '11%'" //"exp": "HUC_4 IN ('0512','0509','0514','0709','0713','0706','0708','0714','1030','0801','0802','0803','0806','0807','0808','0809')
                         }],
                         "includeLegend": true
                     }
@@ -48,10 +72,10 @@ require([
             "showGroupHeading": false,
             "includeInLayerList": true,
             "layers": {
-                "ACE Diversions": {
+                "USACE Diversions": {
                     "url" : "http://commons.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/1",
                     "options": {
-                        "id": "aceDiversions",
+                        "id": "usaceDiversions",
                         "opacity": 1.0,
                         "outFields": ["*"],
                         "visible": true
@@ -60,12 +84,10 @@ require([
                         "type": "layer",
                         "layerType": "agisFeature",
                         "includeInLayerList": true,
-                        "hasOpacitySlider": true,
-                        "hasZoomto": true,
                         "includeLegend" : true
                     }
                 },
-                "NWIS Sites of interest": {
+                "NWIS sites of interest": {
                     "url" : "http://commons.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/0",
                     "options": {
                         "id": "nwisSites",
@@ -77,13 +99,15 @@ require([
                         "type": "layer",
                         "layerType": "agisFeature",
                         "includeInLayerList": true,
-                        "hasOpacitySlider": true,
-                        "hasZoomto": true,
-                        "includeLegend" : true
+                        "includeLegend" : true,
+                        "selectionSymbol": new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+                            new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
+                                new Color([255, 0, 0]), 2), new Color([255, 255, 0, 0.5]))
                     }
                 }
             }
         }
+
         /*,
         {
             "groupHeading": "extra may not need",
