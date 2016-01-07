@@ -15,6 +15,7 @@ var defaultMapCenter = [-95.6, 38.6];
 
 require([
     'esri/arcgis/utils',
+    'esri/Color',
     'esri/map',
     'esri/dijit/HomeButton',
     'esri/dijit/LocateButton',
@@ -27,6 +28,7 @@ require([
     'esri/geometry/Point',
     'esri/SpatialReference',
     'esri/symbols/PictureMarkerSymbol',
+    'esri/symbols/SimpleFillSymbol',
     'esri/geometry/webMercatorUtils',
     'dojo/dnd/Moveable',
     'dojo/query',
@@ -36,6 +38,7 @@ require([
     'dojo/domReady!'
 ], function (
     arcgisUtils,
+    Color,
     Map,
     HomeButton,
     LocateButton,
@@ -48,6 +51,7 @@ require([
     Point,
     SpatialReference,
     PictureMarkerSymbol,
+    SimpleFillSymbol,
     webMercatorUtils,
     Moveable,
     query,
@@ -295,10 +299,11 @@ require([
 
     map.on('layer-add', function (evt) {
         var layer = evt.layer.id;
+        var actualLayer = evt.layer;
 
         if (layer == "nwisSites") {
+
             map.getLayer(layer).on('click', function(evt) {
-                console.log(evt.graphic.attributes["Name"]);
 
                 var feature = evt.graphic;
                 var attr = feature.attributes;
@@ -307,6 +312,7 @@ require([
                 var url = "http://waterservices.usgs.gov/nwis/iv/?format=json&sites="+attr['Name']+"&parameterCd=00060,00065,00010,00095,63680,99133";
 
                 var rtHtml = "";
+                var nwisHtml = "";
 
                 $.ajax({
                     dataType: 'json',
@@ -315,6 +321,8 @@ require([
                     headers: {'Accept': '*/*'},
                     success: function (data) {
                         var siteData = data;
+                        var variable = "";
+                        var variableCode = "";
                         //if siteData.
                         //rtHtml = ""
                         $.each(siteData.value.timeSeries, function(key, value) {
@@ -324,8 +332,7 @@ require([
                                 ", units: " + value.variable.unit.unitAbbreviation +
                                 ", value: " + value.values[0].value[0].value);*/
 
-                            var variableCode = value.variable.variableCode[0].value;
-                            var variable = "";
+                            variableCode = value.variable.variableCode[0].value;
                             var units = value.variable.unit.unitAbbreviation;
                             var varValue = "";
                             if (value.values[0].value.length > 0) {
@@ -351,23 +358,38 @@ require([
                                         break;
                                 }
 
-                                var rtLabel = "<label>" + variable + ": <span style='font-weight: normal'>" + varValue + ", " + units + "</span></label><br/>";
+                                var todayDate = getTodayDate();
+
+                                var rtLabel = "<label>" + variable + ": <span style='font-weight: normal'>" + varValue + " " + units + "</span></label><br/>";
 
                                 rtHtml = rtHtml + rtLabel;
+
+                                var siteNo = feature.attributes.Name;
+                                var nwisGraphUrl = "http://waterdata.usgs.gov/nwisweb/graph?agency_cd=USGS&site_no="+siteNo+"&parm_cd="+variableCode+"&begin_date=2015-12-23&end_date="+todayDate;
+
+                                var nwisChart = "<br/><br/><label>"+ variable + "</label><br/><img src='" + nwisGraphUrl + "'/>";
+
+                                nwisHtml = nwisHtml + nwisChart;
+
                             }
 
                             //$("#rtInfo").html(rtHtml);
                         });
 
-                        var template = new esri.InfoTemplate("<span class=''>Site No: ${Name}</span>",
-                            "<div id='rtInfo'>" + rtHtml + "</div>");
+                        var siteName = siteData.value.timeSeries[0].sourceInfo.siteName;
+                        var siteNo = feature.attributes.Name;
+
+                        var template = new esri.InfoTemplate("<span class=''>" + siteName + " (${Name})</span>",
+                            "<div id='rtInfo'>" + rtHtml + "</div>" +
+                            "<br/><span>Most recent measurement - see <a target='_blank' href='http://waterdata.usgs.gov/nwis/uv?site_no=" + siteNo + "'>NWIS Site</a> for more details</span>" +
+                            "<div id='nwisCharts'>" + nwisHtml + "</div>");
 
                         feature.setInfoTemplate(template);
 
                         map.infoWindow.setFeatures([feature]);
 
                         map.infoWindow.show(evt.mapPoint);
-                        map.infoWindow.resize(290,400);
+                        map.infoWindow.resize(620,450);
 
                     },
                     error: function (error) {
@@ -376,8 +398,43 @@ require([
                 });
 
             });
+        } else if (layer == "usaceDiversions") {
+            map.getLayer(layer).on('click', function(evt) {
+                console.log(evt.graphic.attributes["Name"]);
+
+                var feature = evt.graphic;
+                var attr = feature.attributes;
+
+                var template = new esri.InfoTemplate("<span class=''>USACE Diversion</span>",
+                    "<label>${Name}</label>");
+
+                feature.setInfoTemplate(template);
+
+                map.infoWindow.setFeatures([feature]);
+
+                map.infoWindow.show(evt.mapPoint);
+            });
         }
     });
+
+    function getTodayDate() {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if(dd<10) {
+            dd='0'+dd
+        }
+
+        if(mm<10) {
+            mm='0'+mm
+        }
+
+        today = yyyy+'-'+mm+'-'+dd;
+
+        return today;
+    }
 
     // Geosearch functions
     on(dom.byId('btnGeosearch'),'click', geosearch);
@@ -586,6 +643,13 @@ require([
                     //check if include in legend is true
                     if (layerDetails.wimOptions && layerDetails.wimOptions.includeLegend == true){
                         legendLayers.push({layer:layer, title: layerName});
+                    }
+                    if (layerDetails.wimOptions && layerDetails.wimOptions.selectionSymbol) {
+                        /*layer.on("load", function (evt) {
+                            layer.suspend();
+                            layer.setSelectionSymbol(layerDetails.wimOptions.selectionSymbol);
+                            layer.resume();
+                        });*/
                     }
                     addLayer(group.groupHeading, group.showGroupHeading, layer, layerName, exclusiveGroupName, layerDetails.options, layerDetails.wimOptions);
                     //addMapServerLegend(layerName, layerDetails);
