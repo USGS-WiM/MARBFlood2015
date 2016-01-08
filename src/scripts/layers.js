@@ -26,6 +26,24 @@ require([
             "showGroupHeading": false,
             "includeInLayerList": true,
             "layers": {
+                "USGS Streamflow Gages": {
+                    "url" : "http://commons.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/3",
+                    "options": {
+                        "id": "nwisStreamflowSites",
+                        "opacity": 1.0,
+                        "outFields": ["*"],
+                        "visible": true
+                    },
+                    "wimOptions": {
+                        "type": "layer",
+                        "layerType": "agisFeature",
+                        "includeInLayerList": true,
+                        "includeLegend" : true,
+                        "selectionSymbol": new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+                            new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
+                                new Color([255, 0, 0]), 2), new Color([255, 255, 0, 0.5]))
+                    }
+                },
                 "US Army Corps of Engineers Diversions": {
                     "url" : "http://commons.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/2",
                     "options": {

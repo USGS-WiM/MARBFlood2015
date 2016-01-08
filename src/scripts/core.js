@@ -307,7 +307,7 @@ require([
         var layer = evt.layer.id;
         var actualLayer = evt.layer;
 
-        if (layer == "nwisSites" || layer == "nwisSuperSites") {
+        if (layer == "nwisSites" || layer == "nwisSuperSites" || layer == "nwisStreamflowSites") {
 
             map.getLayer(layer).on('click', function(evt) {
 
@@ -435,7 +435,7 @@ require([
 
                                 var template = new esri.InfoTemplate("<span class=''>" + siteName + " (${Name})</span>",
                                     "<div id='rtInfo'>" + rtHtml + "</div>" +
-                                    "<br/><span>Most recent measurement(s) (local time) - see <a target='_blank' href='http://waterdata.usgs.gov/nwis/uv?site_no=" + siteNo + "'>NWIS Site</a> for more details</span>" +
+                                    "<br/><span>Most recent measurement(s) <span style='font-size: smaller; color: darkblue'><i>(local time)</i></span> - see <a target='_blank' href='http://waterdata.usgs.gov/nwis/uv?site_no=" + siteNo + "'>NWIS Site</a> for more details</span>" +
                                     "<div id='nwisCharts'>" + nwisHtml + "</div>");
 
                                 feature.setInfoTemplate(template);
@@ -472,6 +472,7 @@ require([
                 map.infoWindow.setFeatures([feature]);
 
                 map.infoWindow.show(evt.mapPoint);
+                map.infoWindow.resize(260,450);
             });
         }
     });
