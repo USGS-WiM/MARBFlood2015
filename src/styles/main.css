@@ -296,8 +296,16 @@ a.lgi-zoom:hover {
     text-align: center;
 }
 
+#rtInfo {
+    padding-top: 5px;
+}
+
 #rtLoader {
     font-size: 50px;
+}
+
+.paramLabel {
+    padding-top: 7px;
 }
 
 #wim_logo {
