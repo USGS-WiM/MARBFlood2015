@@ -22,11 +22,69 @@ require([
 
     allLayers = [
         {
+            "groupHeading": "feature layers",
+            "showGroupHeading": false,
+            "includeInLayerList": true,
+            "layers": {
+                "US Army Corps of Engineers Diversions": {
+                    "url" : "http://commons.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/2",
+                    "options": {
+                        "id": "usaceDiversions",
+                        "opacity": 1.0,
+                        "outFields": ["*"],
+                        "visible": true
+                    },
+                    "wimOptions": {
+                        "type": "layer",
+                        "layerType": "agisFeature",
+                        "includeInLayerList": true,
+                        "includeLegend" : true
+                    }
+                },
+                "USGS NWIS sites of interest": {
+                    "url" : "http://commons.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/1",
+                    "options": {
+                        "id": "nwisSites",
+                        "opacity": 1.0,
+                        "outFields": ["*"],
+                        "visible": true
+                    },
+                    "wimOptions": {
+                        "type": "layer",
+                        "layerType": "agisFeature",
+                        "includeInLayerList": true,
+                        "includeLegend" : true,
+                        "selectionSymbol": new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+                            new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
+                                new Color([255, 0, 0]), 2), new Color([255, 255, 0, 0.5]))
+                    }
+                },
+                "USGS super gages": {
+                    "url" : "http://commons.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/0",
+                    "options": {
+                        "id": "nwisSuperSites",
+                        "opacity": 1.0,
+                        "outFields": ["*"],
+                        "visible": true
+                    },
+                    "wimOptions": {
+                        "type": "layer",
+                        "layerType": "agisFeature",
+                        "includeInLayerList": true,
+                        "includeLegend" : true,
+                        "selectionSymbol": new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+                            new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
+                                new Color([255, 0, 0]), 2), new Color([255, 255, 0, 0.5]))
+                    }
+                }
+            }
+        },
+        {
             "groupHeading": "dynamic map services",
             "showGroupHeading": false,
             "includeInLayerList": true,
             "layers": {
-                "HUC 2 from Forest Service" : {
+                "Hydrologic Unit Code, 2-digit" : {
                     "url": "http://services.nationalmap.gov/arcgis/rest/services/selectable_polygons/MapServer",//"url": "http://apps.fs.fed.us/arcx/rest/services/EDW_FEATURE/EDW_Watersheds_01/MapServer",
                     "visibleLayers": [12],
                     "options": {
@@ -44,68 +102,9 @@ require([
                         }],
                         "includeLegend": true
                     }
-                },
-                "HUC 4 from Forest Service" : {
-                    "url": "http://services.nationalmap.gov/arcgis/rest/services/selectable_polygons/MapServer",//http://apps.fs.fed.us/arcx/rest/services/EDW_FEATURE/EDW_Watersheds_01/MapServer",
-                    "visibleLayers": [13],
-                    "options": {
-                        "id": "huc4",
-                        "opacity": 1.0,
-                        "visible": false
-                    },
-                    "wimOptions": {
-                        "type": "layer",
-                        "layerType": "agisDynamic",
-                        "includeInLayerList": true,
-                        "layerDefinition": [{
-                            "id": "13",
-                            "exp": "HUC4 LIKE '05%' OR HUC4 LIKE '06%' OR HUC4 LIKE '07%' OR HUC4 LIKE '08%' OR HUC4 LIKE '10%' OR HUC4 LIKE '11%'" //"exp": "HUC_4 IN ('0512','0509','0514','0709','0713','0706','0708','0714','1030','0801','0802','0803','0806','0807','0808','0809')
-                        }],
-                        "includeLegend": true
-                    }
                 }
             },
 
-        },
-        {
-            "groupHeading": "feature layers",
-            "showGroupHeading": false,
-            "includeInLayerList": true,
-            "layers": {
-                "USACE Diversions": {
-                    "url" : "http://commons.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/1",
-                    "options": {
-                        "id": "usaceDiversions",
-                        "opacity": 1.0,
-                        "outFields": ["*"],
-                        "visible": true
-                    },
-                    "wimOptions": {
-                        "type": "layer",
-                        "layerType": "agisFeature",
-                        "includeInLayerList": true,
-                        "includeLegend" : true
-                    }
-                },
-                "NWIS sites of interest": {
-                    "url" : "http://commons.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/0",
-                    "options": {
-                        "id": "nwisSites",
-                        "opacity": 1.0,
-                        "outFields": ["*"],
-                        "visible": true
-                    },
-                    "wimOptions": {
-                        "type": "layer",
-                        "layerType": "agisFeature",
-                        "includeInLayerList": true,
-                        "includeLegend" : true,
-                        "selectionSymbol": new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
-                            new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
-                                new Color([255, 0, 0]), 2), new Color([255, 255, 0, 0.5]))
-                    }
-                }
-            }
         }
 
         /*,

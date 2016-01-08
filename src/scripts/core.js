@@ -148,13 +148,14 @@ require([
 
     map = Map('mapDiv', {
         basemap: 'topo',
-        extent: new Extent(-11855313.614264622, 3059969.795996928, -7946629.735874887, 5606240.082232042, new SpatialReference({ wkid:3857 })),
+        extent: new Extent(-14433419.922780503, 2497393.2678181794, -6616052.166001038, 7624177.628960158, new SpatialReference({ wkid:3857 })),
     });
 
     //button for returning to initial extent
     var home = new HomeButton({
         map: map
     }, "homeButton");
+
     home.startup();
     //button for finding and zooming to user's location
     var locate = new LocateButton({
@@ -207,6 +208,11 @@ require([
         var scale =  map.getScale().toFixed(0);
         $('#scale')[0].innerHTML = addCommas(scale);
     });
+
+    //code block to debug on extent changes
+    /*on(map, "extent-change", function () {
+        console.log(map.extent);
+    })*/
 
     //updates lat/lng indicator on mouse move. does not apply on devices w/out mouse. removes "map center" label
     on(map, "mouse-move", function (cursorPosition) {
@@ -301,96 +307,143 @@ require([
         var layer = evt.layer.id;
         var actualLayer = evt.layer;
 
-        if (layer == "nwisSites") {
+        if (layer == "nwisSites" || layer == "nwisSuperSites") {
 
             map.getLayer(layer).on('click', function(evt) {
 
                 var feature = evt.graphic;
                 var attr = feature.attributes;
 
-                //var url = "http://waterservices.usgs.gov/nwis/site/?format=gm&sites="+attr['Name']+"&siteOutput=expanded&outputDataTypeCd=iv&hasDataTypeCd=iv&parameterCd=00065,00060,00010,00095,63680,99133";
-                var url = "http://waterservices.usgs.gov/nwis/iv/?format=json&sites="+attr['Name']+"&parameterCd=00060,00065,00010,00095,63680,99133";
+                var siteNo = feature.attributes.Name;
 
-                var rtHtml = "";
-                var nwisHtml = "";
+                //var siteUrl = "http://waterdata.usgs.gov/nwis/uv?search_site_no=07183500&period=1&format=rdb";
+                var siteUrl = "http://fim.wim.usgs.gov/proxies/httpProxy/Default.aspx?site_no="+siteNo+"&site_info=true";
+
+                var param_dd = {};
 
                 $.ajax({
-                    dataType: 'json',
+                    dataType: 'text',
                     type: 'GET',
-                    url: url,
+                    url: siteUrl,
                     headers: {'Accept': '*/*'},
                     success: function (data) {
-                        var siteData = data;
-                        var variable = "";
-                        var variableCode = "";
-                        //if siteData.
-                        //rtHtml = ""
-                        $.each(siteData.value.timeSeries, function(key, value) {
-                            /*console.log("key: " + key + ", value: " + value);
-                            console.log(
-                                "var code: " + value.variable.variableCode[0].value +
-                                ", units: " + value.variable.unit.unitAbbreviation +
-                                ", value: " + value.values[0].value[0].value);*/
-
-                            variableCode = value.variable.variableCode[0].value;
-                            var units = value.variable.unit.unitAbbreviation;
-                            var varValue = "";
-                            if (value.values[0].value.length > 0) {
-                                var varValue = value.values[0].value[0].value;
-                                switch (variableCode) {
-                                    case "00060":
-                                        variable = "Discharge";
-                                        break;
-                                    case "00065":
-                                        variable = "Gage height";
-                                        break;
-                                    case "00010":
-                                        variable = "Temperature, water";
-                                        break;
-                                    case "00095":
-                                        variable = "Specific cond at 25C";
-                                        break;
-                                    case "63680":
-                                        variable = "Turbidity, Form Neph";
-                                        break;
-                                    case "99133":
-                                        variable = "NO3+NO2,water,insitu";
-                                        break;
-                                }
-
-                                var todayDate = getTodayDate();
-
-                                var rtLabel = "<label>" + variable + ": <span style='font-weight: normal'>" + varValue + " " + units + "</span></label><br/>";
-
-                                rtHtml = rtHtml + rtLabel;
-
-                                var siteNo = feature.attributes.Name;
-                                var nwisGraphUrl = "http://waterdata.usgs.gov/nwisweb/graph?agency_cd=USGS&site_no="+siteNo+"&parm_cd="+variableCode+"&begin_date=2015-12-23&end_date="+todayDate;
-
-                                var nwisChart = "<br/><br/><label>"+ variable + "</label><br/><img src='" + nwisGraphUrl + "'/>";
-
-                                nwisHtml = nwisHtml + nwisChart;
-
+                        console.log(data);
+                        var paramArray = data.split("DD")[1].split("#");
+                        paramArray.shift();
+                        $.each(paramArray, function(key, value) {
+                            if (paramArray[key] == "\n") {
+                                return false;
                             }
-
-                            //$("#rtInfo").html(rtHtml);
+                            var lineItems = paramArray[key].trim();
+                            var dd = lineItems.substring(0, 2);
+                            var param = lineItems.substring(5, 10);
+                            param_dd[param] = dd;
                         });
 
-                        var siteName = siteData.value.timeSeries[0].sourceInfo.siteName;
-                        var siteNo = feature.attributes.Name;
+                        console.log(param_dd);
 
-                        var template = new esri.InfoTemplate("<span class=''>" + siteName + " (${Name})</span>",
-                            "<div id='rtInfo'>" + rtHtml + "</div>" +
-                            "<br/><span>Most recent measurement - see <a target='_blank' href='http://waterdata.usgs.gov/nwis/uv?site_no=" + siteNo + "'>NWIS Site</a> for more details</span>" +
-                            "<div id='nwisCharts'>" + nwisHtml + "</div>");
+                        //var url = "http://waterservices.usgs.gov/nwis/site/?format=gm&sites="+attr['Name']+"&siteOutput=expanded&outputDataTypeCd=iv&hasDataTypeCd=iv&parameterCd=00065,00060,00010,00095,63680,99133";
+                        var url = "http://waterservices.usgs.gov/nwis/iv/?format=json&sites="+attr['Name']+"&parameterCd=00060,00065,00010,00400,00300,00095,32283,63680,99133";
 
-                        feature.setInfoTemplate(template);
+                        var rtHtml = "";
+                        var nwisHtml = "";
 
-                        map.infoWindow.setFeatures([feature]);
+                        $.ajax({
+                            dataType: 'json',
+                            type: 'GET',
+                            url: url,
+                            headers: {'Accept': '*/*'},
+                            success: function (data) {
+                                var siteData = data;
+                                var variable = "";
+                                var variableCode = "";
+                                //if siteData.
+                                //rtHtml = ""
+                                $.each(siteData.value.timeSeries, function(key, value) {
+                                    /*console.log("key: " + key + ", value: " + value);
+                                     console.log(
+                                     "var code: " + value.variable.variableCode[0].value +
+                                     ", units: " + value.variable.unit.unitAbbreviation +
+                                     ", value: " + value.values[0].value[0].value);*/
 
-                        map.infoWindow.show(evt.mapPoint);
-                        map.infoWindow.resize(620,450);
+                                    variableCode = value.variable.variableCode[0].value;
+                                    var units = value.variable.unit.unitAbbreviation;
+                                    var varValue = "";
+                                    if (value.values[0].value.length > 0) {
+                                        var varValue = value.values[0].value[0].value;
+                                        switch (variableCode) {
+                                            case "00060":
+                                                variable = "Discharge";
+                                                break;
+                                            case "00065":
+                                                variable = "Gage height";
+                                                break;
+                                            case "00010":
+                                                variable = "Temperature, water";
+                                                break;
+                                            case "00300":
+                                                variable = "Dissolved oxygen";
+                                                break;
+                                            case "00400":
+                                                variable = "pH";
+                                                break;
+                                            case "00095":
+                                                variable = "Specific cond at 25C";
+                                                break;
+                                            case "32283":
+                                                variable = "Chlorophyll, in situ";
+                                                break;
+                                            case "63680":
+                                                variable = "Turbidity, Form Neph";
+                                                break;
+                                            case "99133":
+                                                variable = "NO3+NO2,water,insitu";
+                                                break;
+                                        }
 
+                                        var todayDate = getTodayDate();
+
+                                        var rtLabel = "";
+                                        if (varValue == "-999999") {
+                                            rtLabel = "<label>" + variable + ": <span style='font-weight: normal'>N/A</span></label><br/>";
+                                        } else {
+                                            rtLabel = "<label>" + variable + ": <span style='font-weight: normal'>" + varValue + " " + units + "</span></label><br/>";
+                                        }
+
+
+                                        rtHtml = rtHtml + rtLabel;
+
+                                        var siteNo = feature.attributes.Name;
+                                        var nwisGraphUrl = "http://waterdata.usgs.gov/nwisweb/graph?agency_cd=USGS&site_no="+siteNo+"&parm_cd="+variableCode+"&begin_date=2015-12-23&end_date="+todayDate//+"&dd_nu="+param_dd[variableCode];
+
+                                        var nwisChart = "<br/><br/><label>"+ variable + "</label><br/><img src='" + nwisGraphUrl + "'/>";
+
+                                        nwisHtml = nwisHtml + nwisChart;
+
+                                    }
+
+                                    //$("#rtInfo").html(rtHtml);
+                                });
+
+                                var siteName = siteData.value.timeSeries[0].sourceInfo.siteName;
+
+                                var template = new esri.InfoTemplate("<span class=''>" + siteName + " (${Name})</span>",
+                                    "<div id='rtInfo'>" + rtHtml + "</div>" +
+                                    "<br/><span>Most recent measurement(s) - see <a target='_blank' href='http://waterdata.usgs.gov/nwis/uv?site_no=" + siteNo + "'>NWIS Site</a> for more details</span>" +
+                                    "<div id='nwisCharts'>" + nwisHtml + "</div>");
+
+                                feature.setInfoTemplate(template);
+
+                                map.infoWindow.setFeatures([feature]);
+
+                                map.infoWindow.show(evt.mapPoint);
+                                map.infoWindow.resize(620,450);
+
+                            },
+                            error: function (error) {
+                                console.log("Error processing the JSON. The error is:" + error);
+                            }
+                        });
                     },
                     error: function (error) {
                         console.log("Error processing the JSON. The error is:" + error);
