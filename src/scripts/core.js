@@ -401,24 +401,30 @@ require([
                                                 break;
                                         }
 
+                                        var startDate = "2015-12-15";
                                         var todayDate = getTodayDate();
+                                        var valDate = value.values[0].value[0].dateTime;
+
+                                        var formattedDate = dateFormat(valDate);
 
                                         var rtLabel = "";
                                         if (varValue == "-999999") {
-                                            rtLabel = "<label>" + variable + ": <span style='font-weight: normal'>N/A</span></label><br/>";
+                                            rtLabel = "<label class='paramLabel'>" + variable + ": <span style='font-weight: normal'>N/A</span></label><br/>";
                                         } else {
-                                            rtLabel = "<label>" + variable + ": <span style='font-weight: normal'>" + varValue + " " + units + "</span></label><br/>";
+                                            rtLabel = "<label class='paramLabel'>" + variable + ": <span style='font-weight: normal'>" + varValue + " " + units + " <span style='font-size: smaller; color: darkblue'><i>(" + formattedDate + "</i>)</span></span></label><br/>";
                                         }
-
 
                                         rtHtml = rtHtml + rtLabel;
 
                                         var siteNo = feature.attributes.Name;
-                                        var nwisGraphUrl = "http://waterdata.usgs.gov/nwisweb/graph?agency_cd=USGS&site_no="+siteNo+"&parm_cd="+variableCode+"&begin_date=2015-12-23&end_date="+todayDate//+"&dd_nu="+param_dd[variableCode];
 
-                                        var nwisChart = "<br/><br/><label>"+ variable + "</label><br/><img src='" + nwisGraphUrl + "'/>";
+                                        if (dateInRange(valDate,startDate) == true) {
+                                            var nwisGraphUrl = "http://waterdata.usgs.gov/nwisweb/graph?agency_cd=USGS&site_no="+siteNo+"&parm_cd="+variableCode+"&begin_date=" + startDate + "&end_date="+todayDate//+"&dd_nu="+param_dd[variableCode];
 
-                                        nwisHtml = nwisHtml + nwisChart;
+                                            var nwisChart = "<br/><br/><label>"+ variable + "</label><br/><img src='" + nwisGraphUrl + "'/>";
+
+                                            nwisHtml = nwisHtml + nwisChart;
+                                        }
 
                                     }
 
@@ -429,7 +435,7 @@ require([
 
                                 var template = new esri.InfoTemplate("<span class=''>" + siteName + " (${Name})</span>",
                                     "<div id='rtInfo'>" + rtHtml + "</div>" +
-                                    "<br/><span>Most recent measurement(s) - see <a target='_blank' href='http://waterdata.usgs.gov/nwis/uv?site_no=" + siteNo + "'>NWIS Site</a> for more details</span>" +
+                                    "<br/><span>Most recent measurement(s) (local time) - see <a target='_blank' href='http://waterdata.usgs.gov/nwis/uv?site_no=" + siteNo + "'>NWIS Site</a> for more details</span>" +
                                     "<div id='nwisCharts'>" + nwisHtml + "</div>");
 
                                 feature.setInfoTemplate(template);
@@ -487,6 +493,41 @@ require([
         today = yyyy+'-'+mm+'-'+dd;
 
         return today;
+    }
+
+    function dateInRange(valDate,startDate) {
+        console.log('valDate: ' + valDate + ', startDate: ' + startDate);
+        var inRange = false;
+
+        var valDateSub = valDate.substring(0,10);
+
+        var valDateSubSplit = valDateSub.split('-');
+        var startDateSplit = startDate.split('-');
+
+        var val = new Date(valDateSubSplit[0], valDateSubSplit[1]-1, valDateSubSplit[2]); //Year, Month, Date
+        var start = new Date(startDateSplit[0], startDateSplit[1]-1, startDateSplit[2]);
+
+        if(val >= start)
+        {
+            inRange = true;
+        }
+
+        return inRange;
+    }
+
+    function dateFormat(valDate) {
+        var outFormat = "";
+
+        console.log(valDate);
+
+        var dateSplit = valDate.split("T");
+
+        var utcFormat = dateSplit[0] + " " + dateSplit[1].split(".")[0] + " UTC";
+        var utcDate = new Date(utcFormat).toString();
+
+        outFormat = dateSplit[0] + " " + utcDate.split(" ")[4];
+
+        return outFormat;
     }
 
     // Geosearch functions

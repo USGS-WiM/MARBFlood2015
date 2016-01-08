@@ -41,7 +41,7 @@ require([
                         "includeLegend" : true
                     }
                 },
-                "USGS NWIS sites of interest": {
+                "USGS Continuous Water Quality Monitoring Sites": {
                     "url" : "http://commons.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/1",
                     "options": {
                         "id": "nwisSites",
