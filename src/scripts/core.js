@@ -1028,6 +1028,10 @@ require([
             else {
                 //otherwise append
                 $('#toggle').append(button);
+                if (wimOptions.toolTip) {
+                    var moreInfo = $('<span id="moreInfo' + camelize(layerName) + '" class="fa fa-info-circle pull-right" title="' + wimOptions.toolTip + '"></span>')
+                    $("#"+layer.id).append(moreInfo);
+                }
             }
         }
 
