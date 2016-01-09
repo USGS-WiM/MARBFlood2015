@@ -32,7 +32,7 @@ require([
                         "id": "nwisStreamflowSites",
                         "opacity": 1.0,
                         "outFields": ["*"],
-                        "visible": true
+                        "visible": false
                     },
                     "wimOptions": {
                         "type": "layer",
@@ -77,13 +77,13 @@ require([
                                 new Color([255, 0, 0]), 2), new Color([255, 255, 0, 0.5]))
                     }
                 },
-                "USGS super gages": {
+                "USGS Supergages": {
                     "url" : "http://commons.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/0",
                     "options": {
                         "id": "nwisSuperSites",
                         "opacity": 1.0,
                         "outFields": ["*"],
-                        "visible": true
+                        "visible": false
                     },
                     "wimOptions": {
                         "type": "layer",
