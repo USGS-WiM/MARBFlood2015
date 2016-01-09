@@ -90,6 +90,7 @@ require([
                         "layerType": "agisFeature",
                         "includeInLayerList": true,
                         "includeLegend" : true,
+                        "toolTip": "Super gages are USGS streamgage sites with real-time, continuous measurements of the physical and chemical characteristics of water include more common measurements such as temperature and pH as well as measurements from more advanced water quality instrumentation such as nitrate sensors and field fluorometers. Discrete samples are also collected for laboratory analysis and possible statistical surrogate model development.",
                         "selectionSymbol": new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
                             new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
                                 new Color([255, 0, 0]), 2), new Color([255, 255, 0, 0.5]))

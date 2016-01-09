@@ -39,6 +39,8 @@
             </a>
         </div>
 
+        <span id="mainSiteLink" class="navbar-text" style="><a target="_blank" href="http://water.usgs.gov/owq/floods/2016/winter/">Return to Main Page</a></span>
+
         <button id="geosearchNav" type="button" class="btn btn-primary navbar-btn pull-right">
             <span class="glyphicon glyphicon-search"></span>
             <span id="geosearchButtonText"> Geosearch</span>
@@ -99,13 +101,21 @@
                 </ul>
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane" id="aboutTabPane"></br>
-                        <p style="color:black; font-size: larger">App Info is below. This could be a subtitle space.</p>
-                        <p>Application info goes here. Use HTML, and your imagination.</p>
+                        <!--<p style="color:black; font-size: larger">App Info is below. This could be a subtitle space.</p>-->
+                        <p>Heavy rainfall since Friday, December 25, 2015, has led to widespread flooding in parts of the central and southeast United States.
+                            On December 29, 2015, 311 USGS streamgages are reporting water levels above National Weather Service flood stage, with much of the
+                            flooding in the Midwest (Missouri, Arkansas, Oklahoma, and Illinois) and the Southeast (Georgia, Florida, and Mississippi).
+                            This map shows the location of USGS continuous water-quality monitoring stations throughout the Mississippi River basin that
+                            provides information on the impact of flooding on water quality. In particular, loads of sediment and nutrients will be particularly
+                            high for this period relative to historical loads. Recent data and link to for more information are available by selecting a site.
+                            The location of US Army Corp of Engineers diversion locations are shown on the map, as well as water USGS water quality and flow
+                            data publicly available through <a target="_blank" href="www.waterdata.usgs.gov">http://www.waterdata.usgs.gov</a>.
+                            </p><p>
+                            These data are preliminary or provisional and are subject to revision. They are being provided to meet the need for timely best science. The data have not received final approval by the U.S. Geological Survey (USGS) and are provided on the condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the data.</p>
                     </div>
                     <div role="tabpanel" class="tab-pane active" id="disclaimerTabPane"></br>
                         <h3>Data Limitations</h3>
                         <p>Data are provisional and are subject to revision until thoroughly reviewed and approved.</p>
-                        <p>Data disclaimer continues here</p>
                     </div>
 
                 </div>
@@ -189,13 +199,13 @@
                 <div id="legendElement" class="panel panel-default legendClass">
                     <div id="legendHeading" class=" legendHeading" role="tab">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" style="text-decoration: none"  href="#legendCollapse" aria-expanded="true" aria-controls="collapseOne">
+                            <a data-toggle="collapse" style="text-decoration: none"  href="#legendCollapse" aria-expanded="true" aria-controls="legendCollapse">
                                 <span class="glyphicon glyphicon-list"></span>
                                 Legend
                             </a>
                         </h4>
                     </div>
-                    <div id="legendCollapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                    <div id="legendCollapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                         <div id="legendDiv" class="panel-body"></div>
                     </div>
                 </div>
