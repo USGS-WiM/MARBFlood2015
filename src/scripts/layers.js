@@ -27,7 +27,7 @@ require([
             "includeInLayerList": true,
             "layers": {
                 "USGS Streamflow Gages": {
-                    "url" : "http://commons.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/3",
+                    "url" : "http://gis.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/3",
                     "options": {
                         "id": "nwisStreamflowSites",
                         "opacity": 1.0,
@@ -45,7 +45,7 @@ require([
                     }
                 },
                 "US Army Corps of Engineers Diversions": {
-                    "url" : "http://commons.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/2",
+                    "url" : "http://gis.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/2",
                     "options": {
                         "id": "usaceDiversions",
                         "opacity": 1.0,
@@ -60,7 +60,7 @@ require([
                     }
                 },
                 "USGS Continuous Water Quality Monitoring Sites": {
-                    "url" : "http://commons.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/1",
+                    "url" : "http://gis.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/1",
                     "options": {
                         "id": "nwisSites",
                         "opacity": 1.0,
@@ -78,7 +78,7 @@ require([
                     }
                 },
                 "USGS Supergages": {
-                    "url" : "http://commons.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/0",
+                    "url" : "http://gis.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/0",
                     "options": {
                         "id": "nwisSuperSites",
                         "opacity": 1.0,
