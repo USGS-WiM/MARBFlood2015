@@ -327,7 +327,7 @@ require([
                     url: siteUrl,
                     headers: {'Accept': '*/*'},
                     success: function (data) {
-                        console.log(data);
+                        /*console.log(data);
                         var paramArray = data.split("DD")[1].split("#");
                         paramArray.shift();
                         $.each(paramArray, function(key, value) {
@@ -340,7 +340,7 @@ require([
                             param_dd[param] = dd;
                         });
 
-                        console.log(param_dd);
+                        console.log(param_dd);*/
 
                         //var url = "http://waterservices.usgs.gov/nwis/site/?format=gm&sites="+attr['Name']+"&siteOutput=expanded&outputDataTypeCd=iv&hasDataTypeCd=iv&parameterCd=00065,00060,00010,00095,63680,99133";
                         var url = "http://waterservices.usgs.gov/nwis/iv/?format=json&sites="+attr['Name']+"&parameterCd=00060,00065,00010,00400,00300,00095,32283,63680,99133";
@@ -367,7 +367,7 @@ require([
                                      ", value: " + value.values[0].value[0].value);*/
 
                                     variableCode = value.variable.variableCode[0].value;
-                                    var units = value.variable.unit.unitAbbreviation;
+                                    var units = value.variable.unit.unitCode;
                                     var varValue = "";
                                     if (value.values[0].value.length > 0) {
                                         var varValue = value.values[0].value[0].value;
@@ -403,6 +403,7 @@ require([
 
                                         var startDate = "2015-12-15";
                                         var todayDate = getTodayDate();
+                                        todayDate = "2016-02-29";
                                         var valDate = value.values[0].value[0].dateTime;
 
                                         var formattedDate = dateFormat(valDate);
@@ -419,7 +420,7 @@ require([
                                         var siteNo = feature.attributes.Name;
 
                                         if (dateInRange(valDate,startDate) == true) {
-                                            var nwisGraphUrl = "http://waterdata.usgs.gov/nwisweb/graph?agency_cd=USGS&site_no="+siteNo+"&parm_cd="+variableCode+"&begin_date=" + startDate + "&end_date="+todayDate//+"&dd_nu="+param_dd[variableCode];
+                                            var nwisGraphUrl = "http://nwis.waterdata.usgs.gov/nwisweb/graph?agency_cd=USGS&site_no="+siteNo+"&parm_cd="+variableCode+"&begin_date=" + startDate + "&end_date="+todayDate//+"&dd_nu="+param_dd[variableCode];
 
                                             var nwisChart = "<br/><br/><label>"+ variable + "</label><br/><img src='" + nwisGraphUrl + "'/>";
 
