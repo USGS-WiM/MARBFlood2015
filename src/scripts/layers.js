@@ -27,7 +27,7 @@ require([
             "includeInLayerList": true,
             "layers": {
                 "USGS Streamflow Gages": {
-                    "url" : "http://gis.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/3",
+                    "url" : "https://gis.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/3",
                     "options": {
                         "id": "nwisStreamflowSites",
                         "opacity": 1.0,
@@ -45,7 +45,7 @@ require([
                     }
                 },
                 "US Army Corps of Engineers Diversions": {
-                    "url" : "http://gis.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/2",
+                    "url" : "https://gis.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/2",
                     "options": {
                         "id": "usaceDiversions",
                         "opacity": 1.0,
@@ -60,7 +60,7 @@ require([
                     }
                 },
                 "USGS Continuous Water Quality Monitoring Sites": {
-                    "url" : "http://gis.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/1",
+                    "url" : "https://gis.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/1",
                     "options": {
                         "id": "nwisSites",
                         "opacity": 1.0,
@@ -78,7 +78,7 @@ require([
                     }
                 },
                 "USGS Supergages": {
-                    "url" : "http://gis.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/0",
+                    "url" : "https://gis.wim.usgs.gov/arcgis/rest/services/Miss2015/sitesOfInterest/MapServer/0",
                     "options": {
                         "id": "nwisSuperSites",
                         "opacity": 1.0,
@@ -104,7 +104,7 @@ require([
             "includeInLayerList": true,
             "layers": {
                 "Hydrologic Unit Code, 2-digit" : {
-                    "url": "http://services.nationalmap.gov/arcgis/rest/services/selectable_polygons/MapServer",//"url": "http://apps.fs.fed.us/arcx/rest/services/EDW_FEATURE/EDW_Watersheds_01/MapServer",
+                    "url": "https://services.nationalmap.gov/arcgis/rest/services/selectable_polygons/MapServer",//"url": "https://apps.fs.fed.us/arcx/rest/services/EDW_FEATURE/EDW_Watersheds_01/MapServer",
                     "visibleLayers": [12],
                     "options": {
                         "id": "huc2",
@@ -133,7 +133,7 @@ require([
             "includeInLayerList": false,
             "layers": {
                 "HUC 4 (From NHD)" : {
-                    "url": "http://services.nationalmap.gov/arcgis/rest/services/nhd/MapServer",
+                    "url": "https://services.nationalmap.gov/arcgis/rest/services/nhd/MapServer",
                     "visibleLayers": [2],
                     "options": {
                         "id": "huc4",

@@ -232,7 +232,7 @@ require([
         $('#longitude').html(geographicMapCenter.x.toFixed(3));
     });
 
-    var nationalMapBasemap = new ArcGISTiledMapServiceLayer('http://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer');
+    var nationalMapBasemap = new ArcGISTiledMapServiceLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer');
     //on clicks to swap basemap. map.removeLayer is required for nat'l map b/c it is not technically a basemap, but a tiled layer.
     on(dom.byId('btnStreets'), 'click', function () {
         map.setBasemap('streets');
@@ -317,7 +317,7 @@ require([
                 var siteNo = feature.attributes.Name;
 
                 //var siteUrl = "http://waterdata.usgs.gov/nwis/uv?search_site_no=07183500&period=1&format=rdb";
-                var siteUrl = "http://fim.wim.usgs.gov/proxies/httpProxy/Default.aspx?site_no="+siteNo+"&site_info=true";
+                var siteUrl = "https://services.wim.usgs.gov/proxies/httpProxy/Default.aspx?site_no="+siteNo+"&site_info=true";
 
                 var param_dd = {};
 
@@ -343,7 +343,7 @@ require([
                         console.log(param_dd);*/
 
                         //var url = "http://waterservices.usgs.gov/nwis/site/?format=gm&sites="+attr['Name']+"&siteOutput=expanded&outputDataTypeCd=iv&hasDataTypeCd=iv&parameterCd=00065,00060,00010,00095,63680,99133";
-                        var url = "http://waterservices.usgs.gov/nwis/iv/?format=json&sites="+attr['Name']+"&parameterCd=00060,00065,00010,00400,00300,00095,32283,63680,99133";
+                        var url = "https://waterservices.usgs.gov/nwis/iv/?format=json&sites="+attr['Name']+"&parameterCd=00060,00065,00010,00400,00300,00095,32283,63680,99133";
 
                         var rtHtml = "";
                         var nwisHtml = "";
@@ -420,7 +420,7 @@ require([
                                         var siteNo = feature.attributes.Name;
 
                                         if (dateInRange(valDate,startDate) == true) {
-                                            var nwisGraphUrl = "http://nwis.waterdata.usgs.gov/nwisweb/graph?agency_cd=USGS&site_no="+siteNo+"&parm_cd="+variableCode+"&begin_date=" + startDate + "&end_date="+todayDate//+"&dd_nu="+param_dd[variableCode];
+                                            var nwisGraphUrl = "https://nwis.waterdata.usgs.gov/nwisweb/graph?agency_cd=USGS&site_no="+siteNo+"&parm_cd="+variableCode+"&begin_date=" + startDate + "&end_date="+todayDate//+"&dd_nu="+param_dd[variableCode];
 
                                             var nwisChart = "<br/><br/><label>"+ variable + "</label><br/><img src='" + nwisGraphUrl + "'/>";
 
@@ -436,7 +436,7 @@ require([
 
                                 var template = new esri.InfoTemplate("<span class=''>" + siteName + " (${Name})</span>",
                                     "<div id='rtInfo'>" + rtHtml + "</div>" +
-                                    "<br/><span>Most recent measurement(s) <span style='font-size: smaller; color: darkblue'><i>(local time)</i></span> - see <a target='_blank' href='http://waterdata.usgs.gov/nwis/uv?site_no=" + siteNo + "'>NWIS Site</a> for more details</span>" +
+                                    "<br/><span>Most recent measurement(s) <span style='font-size: smaller; color: darkblue'><i>(local time)</i></span> - see <a target='_blank' href='https://waterdata.usgs.gov/nwis/uv?site_no=" + siteNo + "'>NWIS Site</a> for more details</span>" +
                                     "<div id='nwisCharts'>" + nwisHtml + "</div>");
 
                                 feature.setInfoTemplate(template);
@@ -1052,7 +1052,7 @@ require([
             else if (layerDetails.wimOptions.layerType === 'agisWMS') {
 
                 //for WMS layers, for now just add layer title
-                var legendItem = $('<div align="left" id="' + camelize(layerName) + '"><img alt="Legend Swatch" src="http://placehold.it/25x41" /><strong>&nbsp;&nbsp;' + layerName + '</strong></br></div>');
+                var legendItem = $('<div align="left" id="' + camelize(layerName) + '"><img alt="Legend Swatch" src="https://placehold.it/25x41" /><strong>&nbsp;&nbsp;' + layerName + '</strong></br></div>');
                 $('#legendDiv').append(legendItem);
 
             }
