@@ -17,7 +17,7 @@
 
     "homepageURL": "https://wim.usgs.gov/MARBFlood2015",
     "downloadURL": "https://github.com/USGS-WiM/MARBFlood2015/archive/master.zip",
-    "disclaimerURL": "https://github.com/USGS-WiM/MARBFlood2015/blob/master/LICENSE.md",
+    "disclaimerURL": "https://github.com/USGS-WiM/MARBFlood2015/blob/master/DISCLAIMER.md",
     "repositoryUrl": "https://github.com/USGS-WiM/MARBFlood2015",
     "vcs": "git",
 
